@@ -1,0 +1,108 @@
+# L0: Knowledge Input Policy
+# Rules for naming, formatting, and submitting knowledge entries to quant-brain
+
+name: L0_knowledge_input
+description: Governs how knowledge entries are named, structured, and submitted
+level: 0
+
+# ─────────────────────────────────────────────
+# DOMAIN PREFIX CODES
+# ─────────────────────────────────────────────
+domain_prefixes:
+  CC:  knowledge/claude-code/
+  E:   knowledge/engineering/
+  QA:  knowledge/quant/alpha/
+  QB:  knowledge/quant/backtest/
+  QD:  knowledge/quant/data_process/
+  LIB: knowledge/libraries/
+  PRJ: knowledge/projects/
+
+# ─────────────────────────────────────────────
+# FILE NAMING RULES
+# ─────────────────────────────────────────────
+file_naming:
+  pattern: "[PREFIX]-[NNN]-[slug].md"
+  examples:
+    - E-001-async-exception-handling.md
+    - QB-002-benchmark-date-alignment.md
+    - QD-003-numpy-row-order-training-data.md
+  rules:
+    - id: K001
+      name: prefix-required
+      description: Filename MUST start with the domain prefix code (E, QA, QB, QD, LIB, PRJ)
+      severity: critical
+
+    - id: K002
+      name: sequence-number-padded
+      description: Use 3-digit zero-padded sequence number per domain (001, 002, ...)
+      severity: high
+
+    - id: K003
+      name: slug-lowercase-hyphens
+      description: Slug must be lowercase, hyphens only (no underscores), max 5 words
+      severity: high
+
+    - id: K004
+      name: slug-describes-problem
+      description: Slug must describe the core bug/lesson, not just the topic area
+      severity: medium
+      good_example: numpy-row-order-training-data
+      bad_example: numpy-issue
+
+# ─────────────────────────────────────────────
+# FRONTMATTER REQUIREMENTS
+# ─────────────────────────────────────────────
+frontmatter:
+  required_fields:
+    - id           # matches filename prefix+number (e.g., QB-002)
+    - domain       # folder path (e.g., quant/backtest)
+    - title        # 5–8 words, domain concept first, describes the issue
+    - summary      # 1 sentence — used by search_knowledge() for ranking
+    - tags         # list of 3–6 lowercase keywords
+    - keywords     # extra terms AI might use to search (synonyms, related jargon)
+    - aliases      # alternate short names (e.g. "lookahead", "future function")
+    - severity     # one of: low | medium | high | critical
+    - date_created # YYYY-MM-DD
+    - source_project # project where this was first discovered
+    - transferable # true | false
+
+  title_rules:
+    - Lead with domain context, then the core issue (e.g., "Backtest: Lookahead Bias via bfill")
+    - Length: 5–8 words
+    - Use a colon to separate domain from issue when helpful
+    - Avoid vague titles like "Common Mistake" or "Best Practices"
+
+  keywords_purpose: >
+    Used by hybrid (keyword + semantic) search to improve recall.
+    Include synonyms, common misspellings, and related technical terms
+    that may appear in a user's query but not in the body text.
+
+  aliases_purpose: >
+    Short alternate names AI might use when retrieving this entry.
+    E.g. for QB-001 (lookahead bias): ["future function", "bfill bias", "look-ahead"]
+
+# ─────────────────────────────────────────────
+# BODY STRUCTURE REQUIREMENTS
+# ─────────────────────────────────────────────
+body_sections:
+  required:
+    - "## Problem"
+    - "## Root Cause"
+    - "## Solution"
+    - "## Prevention"
+  optional:
+    - "## Related"
+
+  solution_rules:
+    - Always include a code block showing BAD vs GOOD patterns
+    - BAD block must have a comment: # BAD / # WRONG
+    - GOOD block must have a comment: # GOOD / # CORRECT
+
+# ─────────────────────────────────────────────
+# SUBMISSION PROCESS (Claude must follow)
+# ─────────────────────────────────────────────
+submission:
+  - Claude NEVER writes directly to knowledge/ — use suggest_knowledge() instead
+  - Suggested entries go to pending/ for human review and approval
+  - Human moves approved entries from pending/ to knowledge/ with correct filename
+  - After approval, human updates INDEX.md to add the new entry

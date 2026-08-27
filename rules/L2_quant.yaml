@@ -1,0 +1,55 @@
+# L2: Quantitative Finance Rules
+# Domain-specific rules for quant research and trading
+
+name: L2_quant
+description: Quantitative finance coding rules — prevent common research pitfalls
+level: 2
+
+rules:
+  - id: Q001
+    name: no-bfill-timeseries
+    description: Never use bfill/backfill on time series — introduces lookahead bias
+    severity: critical
+    pattern: "\\.fillna\\(method=['\"]b(fill|ackfill)['\"]\\)"
+    fix: "Use .fillna(method='ffill') or .fillna(0)"
+    reference: knowledge/quant/backtest/QB-001-lookahead-bias.md
+
+  - id: Q002
+    name: signal-must-shift
+    description: Trading signals must be shifted by at least 1 period before computing returns
+    severity: critical
+    check: ast_based
+    description_long: |
+      Ensure that any signal used for position sizing or stock selection
+      is shifted by at least 1 period to avoid lookahead bias.
+
+  - id: Q003
+    name: winsorize-before-neutralize
+    description: Always winsorize factors before cross-sectional neutralization
+    severity: high
+    check: ast_based
+    reference: knowledge/quant/alpha/QA-001-neutralization-pitfalls.md
+
+  - id: Q004
+    name: no-full-period-zscore
+    description: Never compute z-score using full-period mean/std on time series
+    severity: critical
+    pattern: "(\\.mean\\(\\)|\\. std\\(\\))"
+    fix: "Use .expanding().mean() and .expanding().std()"
+
+  - id: Q005
+    name: check-survivorship-bias
+    description: Verify that stock universe is point-in-time, not survival-biased
+    severity: high
+    check: manual
+    checklist:
+      - "Is the universe reconstructed for each date?"
+      - "Are delisted stocks included?"
+      - "Is the data source point-in-time?"
+
+  - id: Q006
+    name: transaction-cost-required
+    description: All backtests must include transaction cost assumptions
+    severity: medium
+    check: manual
+    default_cost: "10 bps round-trip for A-shares"

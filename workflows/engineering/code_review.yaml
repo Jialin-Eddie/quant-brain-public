@@ -1,0 +1,33 @@
+name: code_review
+description: Standardized code review process
+domain: engineering
+
+steps:
+  - step: 1
+    name: load_checklist
+    description: Load review checklist
+    actions:
+      - get_template("engineering", "code_review_checklist")
+      - get_rules("L1")
+
+  - step: 2
+    name: static_analysis
+    description: Run automated checks
+    actions:
+      - Run quant_linter with L1 rules
+      - Check for common anti-patterns
+
+  - step: 3
+    name: manual_review
+    description: Human-guided review
+    actions:
+      - Logic correctness
+      - Edge case handling
+      - Performance considerations
+
+  - step: 4
+    name: report
+    description: Generate review summary
+    actions:
+      - List findings by severity
+      - Suggest improvements

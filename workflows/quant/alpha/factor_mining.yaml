@@ -1,0 +1,77 @@
+name: factor_mining
+description: End-to-end factor mining workflow from hypothesis to validation
+domain: quant/alpha
+
+steps:
+  - step: 1
+    name: load_knowledge
+    description: Search for relevant existing knowledge and pitfalls
+    actions:
+      - search_knowledge(factor_topic, "quant/alpha")
+      - get_rules("L2")
+
+  - step: 2
+    name: define_hypothesis
+    description: Define the economic hypothesis
+    actions:
+      - What market inefficiency are we capturing?
+      - What is the expected holding period?
+      - Load template: get_template("quant/alpha", "alpha_research")
+
+  - step: 3
+    name: prepare_data
+    description: Load and clean data
+    actions:
+      - Load data from source
+      - Run data quality check
+      - Align timestamps
+      - Check for survivorship bias (Q005)
+
+  - step: 4
+    name: compute_factor
+    description: Compute the raw factor
+    actions:
+      - Implement factor computation
+      - Winsorize at 1%/99% (Q003)
+      - Handle missing values (ffill only, Q001)
+
+  - step: 5
+    name: neutralize
+    description: Cross-sectional neutralization
+    actions:
+      - Neutralize for industry (check Q003)
+      - Optionally neutralize for market cap
+      - Verify IC before and after neutralization
+
+  - step: 6
+    name: ic_analysis
+    description: Information Coefficient analysis
+    actions:
+      - Compute rank IC time series
+      - Calculate IC_IR
+      - Analyze IC decay across lags
+      - Load example: get_example("quant/alpha", "factor_ic_analysis")
+
+  - step: 7
+    name: group_returns
+    description: Quintile portfolio analysis
+    actions:
+      - Sort into quintiles by factor value
+      - Compute group returns (with shift(1), Q002)
+      - Include transaction costs (Q006)
+
+  - step: 8
+    name: validate
+    description: Validate results
+    actions:
+      - Check for lookahead bias (compare shift(0) vs shift(1))
+      - Run out-of-sample test
+      - Check correlation with existing factors
+
+  - step: 9
+    name: report
+    description: Generate research report
+    actions:
+      - Fill alpha_research template
+      - Document findings
+      - If promising, suggest as new knowledge entry

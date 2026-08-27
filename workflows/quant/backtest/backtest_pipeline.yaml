@@ -1,0 +1,51 @@
+name: backtest_pipeline
+description: Standardized backtesting pipeline with built-in safeguards
+domain: quant/backtest
+
+steps:
+  - step: 1
+    name: load_knowledge
+    description: Load relevant backtest pitfalls
+    actions:
+      - search_knowledge("backtest", "quant/backtest")
+      - get_rules("L2")
+
+  - step: 2
+    name: check_rules
+    description: Validate signal and data against quant rules
+    actions:
+      - Verify signal uses shift(1) (Q002)
+      - Check no bfill on time series (Q001)
+      - Verify universe is point-in-time (Q005)
+
+  - step: 3
+    name: generate_signal
+    description: Compute trading signals
+    actions:
+      - Apply factor/signal logic
+      - Shift signals by 1 period
+      - Apply position sizing
+
+  - step: 4
+    name: run_backtest
+    description: Execute the backtest
+    actions:
+      - Set transaction cost assumption (Q006)
+      - Execute trades
+      - Track portfolio value
+
+  - step: 5
+    name: validate_results
+    description: Sanity check backtest results
+    actions:
+      - "If Sharpe > 3, investigate for lookahead bias"
+      - Compare with and without transaction costs
+      - Run on different time periods
+
+  - step: 6
+    name: generate_report
+    description: Create backtest report
+    actions:
+      - get_template("quant/backtest", "backtest_report")
+      - Fill in all metrics
+      - Document assumptions

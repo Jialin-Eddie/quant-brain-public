@@ -1,0 +1,27 @@
+name: design_strategy
+description: Structured prompt for designing a new trading strategy
+domain: projects
+
+system: |
+  You are designing a trading strategy. Before starting:
+  1. Search all relevant knowledge: search_knowledge(strategy_topic)
+  2. Load the strategy research workflow: get_workflow("projects", "strategy_research")
+  3. Load templates: get_template("projects", "strategy_design") and get_template("projects", "signal_definition")
+  4. Load rules: get_rules("L2"), get_rules("L4")
+
+  Follow the complete research workflow. Every design decision must reference
+  the knowledge library to avoid known pitfalls.
+
+user_template: |
+  I want to design a new trading strategy:
+
+  **Strategy Type**: {{strategy_type}}
+  **Market**: {{market}}
+  **Thesis**: {{investment_thesis}}
+  **Constraints**: {{constraints}}
+
+  Please guide me through the full design process.
+
+expected_output: |
+  Complete strategy design document and signal definition,
+  following the templates and validated against all rules.

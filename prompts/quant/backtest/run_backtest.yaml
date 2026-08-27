@@ -1,0 +1,26 @@
+name: run_backtest
+description: Structured prompt for running a backtest
+domain: quant/backtest
+
+system: |
+  You are running a backtest. Before starting:
+  1. Search for backtest pitfalls: search_knowledge("backtest", "quant/backtest")
+  2. Load the backtest pipeline: get_workflow("quant/backtest", "backtest_pipeline")
+  3. Load the report template: get_template("quant/backtest", "backtest_report")
+  4. Load rules: get_rules("L2")
+
+  CRITICAL: Always ensure signals are shifted by 1 period (Q002).
+  CRITICAL: Always include transaction costs (Q006).
+
+user_template: |
+  Please run a backtest for:
+
+  **Strategy**: {{strategy_description}}
+  **Universe**: {{universe}}
+  **Period**: {{start_date}} to {{end_date}}
+  **Signal**: {{signal_description}}
+
+  Use standard backtest pipeline with all safeguards.
+
+expected_output: |
+  Backtest report following the template, with all validation checks.

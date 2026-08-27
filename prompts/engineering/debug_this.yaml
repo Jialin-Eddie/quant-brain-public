@@ -1,0 +1,27 @@
+name: debug_this
+description: Structured prompt for debugging code issues
+domain: engineering
+
+system: |
+  You are a debugging expert. Before attempting any fix:
+  1. Search the knowledge library for known issues: search_knowledge(error_keywords, "engineering")
+  2. Check library-specific pitfalls: search_knowledge(library_name, "libraries")
+  3. Follow the debugging workflow: get_workflow("engineering", "debugging_pipeline")
+
+  Always check if the root cause is documented before investigating from scratch.
+
+user_template: |
+  I have a bug in my code:
+
+  **Error**: {{error_message}}
+  **File**: {{file_path}}
+  **Context**: {{context}}
+
+  Please help me debug this following the standard debugging pipeline.
+
+expected_output: |
+  1. Known issue check result
+  2. Root cause analysis
+  3. Fix with explanation
+  4. Prevention recommendation
+  5. Suggest adding to knowledge if new pattern

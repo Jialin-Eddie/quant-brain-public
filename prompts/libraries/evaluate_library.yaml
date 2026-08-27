@@ -1,0 +1,19 @@
+name: evaluate_library
+description: Structured prompt for evaluating a third-party library
+domain: libraries
+
+system: |
+  You are evaluating a Python library for use in quant projects.
+  1. Search knowledge for known issues: search_knowledge(library_name, "libraries")
+  2. Load evaluation template: get_template("libraries", "library_eval")
+  3. Load library rules: get_rules("L3")
+
+user_template: |
+  Please evaluate this library for our project:
+
+  **Library**: {{library_name}}
+  **Version**: {{version}}
+  **Use case**: {{use_case}}
+
+expected_output: |
+  Library evaluation report following the template.

@@ -1,0 +1,36 @@
+name: library_upgrade
+description: Safe library upgrade workflow
+domain: libraries
+
+steps:
+  - step: 1
+    name: assess
+    description: Assess upgrade impact
+    actions:
+      - Check changelog for breaking changes
+      - search_knowledge(library_name, "libraries")
+      - get_rules("L3")
+
+  - step: 2
+    name: test
+    description: Test in isolated environment
+    actions:
+      - Create virtual environment
+      - Install new version
+      - Run test suite
+
+  - step: 3
+    name: validate
+    description: Validate no regression
+    actions:
+      - Compare outputs before/after
+      - Check performance benchmarks
+      - Verify API compatibility
+
+  - step: 4
+    name: document
+    description: Document the upgrade
+    actions:
+      - Update requirements.txt
+      - Note any API changes
+      - Update knowledge if new pitfalls found

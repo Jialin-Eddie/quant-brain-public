@@ -1,0 +1,42 @@
+# L1: General Engineering Rules
+# Applied to all Python code regardless of domain
+
+name: L1_engineering
+description: General software engineering best practices
+level: 1
+
+rules:
+  - id: E001
+    name: no-bare-except
+    description: Never use bare except clauses — always specify exception type
+    severity: high
+    pattern: "except:"
+    fix: "except (ValueError, TypeError) as e:"
+
+  - id: E002
+    name: no-print-debugging
+    description: Use logging module instead of print() for debugging
+    severity: medium
+    pattern: "print("
+    exclude_patterns: ["if __name__"]
+    fix: "import logging; logger = logging.getLogger(__name__); logger.info()"
+
+  - id: E003
+    name: no-mutable-defaults
+    description: Never use mutable default arguments (list, dict, set)
+    severity: high
+    pattern: "def .*(.*=\\[\\]|.*=\\{\\})"
+    fix: "Use None as default, assign in function body"
+
+  - id: E004
+    name: type-hints-required
+    description: All function signatures should have type hints
+    severity: low
+    check: ast_based
+
+  - id: E005
+    name: no-star-imports
+    description: Never use wildcard imports (from module import *)
+    severity: medium
+    pattern: "from .* import \\*"
+    fix: "Import specific names"

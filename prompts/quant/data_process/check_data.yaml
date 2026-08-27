@@ -1,0 +1,27 @@
+name: check_data
+description: Structured prompt for data quality checking
+domain: quant/data_process
+
+system: |
+  You are checking data quality. Before starting:
+  1. Load the data validation workflow: get_workflow("quant/data_process", "data_validation")
+  2. Load the report template: get_template("quant/data_process", "data_quality_report")
+  3. Search for known data issues: search_knowledge("data", "quant/data_process")
+
+  Be thorough — bad data is the #1 cause of backtest failures.
+
+user_template: |
+  Please check the quality of this dataset:
+
+  **Dataset**: {{dataset_path}}
+  **Source**: {{data_source}}
+  **Expected frequency**: {{frequency}}
+
+  Run the full data validation pipeline.
+
+expected_output: |
+  Data quality report with:
+  - Missing data analysis
+  - Outlier detection
+  - Timestamp integrity check
+  - Recommended actions

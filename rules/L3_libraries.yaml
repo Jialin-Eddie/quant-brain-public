@@ -1,0 +1,41 @@
+# L3: Third-Party Library Rules
+# Common pitfalls with Pandas, NumPy, PyTorch, etc.
+
+name: L3_libraries
+description: Third-party library usage rules — avoid known performance and correctness pitfalls
+level: 3
+
+rules:
+  - id: LIB001
+    name: no-pandas-apply
+    description: Avoid df.apply() for row-wise operations — use vectorized operations
+    severity: medium
+    pattern: "\\.apply\\(.*axis=['\"]?1"
+    fix: "Use np.where(), np.select(), or vectorized pandas operations"
+
+  - id: LIB002
+    name: no-iterrows
+    description: Never use df.iterrows() — extremely slow
+    severity: high
+    pattern: "\\.iterrows\\(\\)"
+    fix: "Use .itertuples(), vectorized ops, or np.vectorize()"
+
+  - id: LIB003
+    name: pandas-copy-warning
+    description: Use .copy() when creating DataFrame slices to avoid SettingWithCopyWarning
+    severity: medium
+    check: ast_based
+
+  - id: LIB004
+    name: numpy-random-seed
+    description: Use np.random.default_rng() instead of np.random.seed() for reproducibility
+    severity: low
+    pattern: "np\\.random\\.seed\\("
+    fix: "rng = np.random.default_rng(seed=42)"
+
+  - id: LIB005
+    name: torch-no-grad
+    description: Use torch.no_grad() during inference to save memory
+    severity: medium
+    pattern: "model\\.eval\\(\\)"
+    check: "Ensure torch.no_grad() context manager is used around inference code"

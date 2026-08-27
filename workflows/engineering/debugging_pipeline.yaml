@@ -1,0 +1,44 @@
+name: debugging_pipeline
+description: Standardized debugging workflow for identifying and fixing bugs
+domain: engineering
+
+steps:
+  - step: 1
+    name: reproduce
+    description: Reproduce the bug reliably
+    actions:
+      - Get exact error message and traceback
+      - Identify minimal reproduction case
+      - Document environment (Python version, OS, dependencies)
+
+  - step: 2
+    name: search_knowledge
+    description: Check if this is a known issue
+    actions:
+      - search_knowledge(error_keywords, domain="engineering")
+      - search_knowledge(error_keywords, domain="libraries")
+    skip_if: "Known issue found — apply documented solution"
+
+  - step: 3
+    name: isolate
+    description: Isolate the root cause
+    actions:
+      - Add logging at key points
+      - Binary search through code changes (git bisect)
+      - Check data inputs for corruption
+
+  - step: 4
+    name: fix
+    description: Implement and verify the fix
+    actions:
+      - Write the minimal fix
+      - Add test case covering the bug
+      - Verify fix doesn't break other tests
+
+  - step: 5
+    name: document
+    description: Record the lesson learned
+    actions:
+      - Fill out templates/engineering/bug_report.md
+      - If transferable, suggest_knowledge() for human review
+      - Update project_status.md

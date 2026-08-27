@@ -1,0 +1,53 @@
+name: data_validation
+description: Data quality validation workflow
+domain: quant/data_process
+
+steps:
+  - step: 1
+    name: load_data
+    description: Load and inspect raw data
+    actions:
+      - Load dataset
+      - Print shape, dtypes, head/tail
+      - get_template("quant/data_process", "data_quality_report")
+
+  - step: 2
+    name: check_timestamps
+    description: Validate temporal integrity
+    actions:
+      - Check for gaps in trading dates
+      - Check for duplicate timestamps
+      - Verify timezone consistency
+      - Run timestamp_checker tool
+
+  - step: 3
+    name: check_missing
+    description: Analyze missing data patterns
+    actions:
+      - Compute missing % per column
+      - Identify patterns (random vs systematic)
+      - Run missing_data_detector tool
+
+  - step: 4
+    name: check_outliers
+    description: Detect and handle outliers
+    actions:
+      - Flag values beyond 3 sigma
+      - Check for data entry errors
+      - Run data_inspector tool
+
+  - step: 5
+    name: validate_values
+    description: Domain-specific value checks
+    actions:
+      - Prices must be positive
+      - Returns should be within reasonable range
+      - Volume should be non-negative
+
+  - step: 6
+    name: report
+    description: Generate data quality report
+    actions:
+      - Fill data_quality_report template
+      - Flag critical issues
+      - Recommend fixes
