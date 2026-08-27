@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "audit_type": "public_release_privacy_and_credentials_scan",
+  "repository": "quant-brain-public",
+  "timestamp": "2026-08-27T14:03:53.9015302+08:00",
+  "timezone": "Asia/Hong_Kong",
+  "auditor": {
+    "name": "Codex",
+    "role": "AI code assistant"
+  },
+  "scope": {
+    "working_tree": true,
+    "all_git_history": true,
+    "git_author_identity": true,
+    "git_remote_configuration": true,
+    "local_git_configuration": true
+  },
+  "checks": [
+    {
+      "id": "personal-identifiers",
+      "status": "pass",
+      "coverage": [
+        "known personal names and username fragments",
+        "personal email domain fragment",
+        "local Windows and Unix home-directory paths"
+      ],
+      "result": "No matches in the public working tree or Git history."
+    },
+    {
+      "id": "credential-patterns",
+      "status": "pass",
+      "coverage": [
+        "API key, secret, password, access-token and client-secret assignments",
+        "OpenAI-style keys",
+        "AWS access-key IDs",
+        "GitHub tokens",
+        "Slack tokens",
+        "long Bearer authorization values",
+        "credential-bearing URLs"
+      ],
+      "result": "No credential value or common credential-token pattern was detected."
+    },
+    {
+      "id": "git-history",
+      "status": "pass",
+      "commit_count": 1,
+      "commit": "f372dd34d422f750dd047209b6b15be31e265b79",
+      "result": "The public repository has a new single-commit history and contains none of the scanned patterns."
+    },
+    {
+      "id": "git-identity",
+      "status": "pass",
+      "author_name": "Quant-Brain contributors",
+      "author_email": "quant-brain@users.noreply.github.com",
+      "result": "No personal name or personal email is present in local Git history or configuration."
+    },
+    {
+      "id": "git-remote",
+      "status": "pass",
+      "configured_remotes": [],
+      "result": "No remote URL is configured; no personal GitHub account identifier will be published accidentally."
+    },
+    {
+      "id": "private-material-boundary",
+      "status": "pass",
+      "excluded": [
+        "pending/",
+        "private/",
+        "knowledge/private/",
+        "local MCP configuration",
+        "project-specific knowledge and rules",
+        "the original repository Git history"
+      ],
+      "result": "The public repository was created from an allowlist of generic materials."
+    }
+  ],
+  "overall_status": "pass",
+  "release_decision": "Approved for public publication with respect to the scanned personal-information, credential, API, and authorization risks.",
+  "limitations": [
+    "Pattern scanning cannot prove that a value is not a secret if it is encoded, encrypted, or not represented as text.",
+    "A manual review remains required for proprietary research, data-license restrictions, and third-party copyright before each future release.",
+    "Run scripts/audit-public.ps1 and review every new file before staging future changes."
+  ]
+}
